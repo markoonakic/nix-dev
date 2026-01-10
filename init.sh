@@ -146,7 +146,7 @@ detect_existing() {
 
     [ -f "flake.nix" ] && has_direnv=true
     [ -f ".envrc" ] && has_direnv=true
-    [ -f "devcontainer/Dockerfile" ] && has_container=true
+    [ -f ".devcontainer/Dockerfile" ] && has_container=true
 
     if $has_direnv && $has_container; then
         echo "both"
@@ -231,8 +231,8 @@ download_template() {
                 files+=("$REPO_URL/templates/$template/flake.nix|flake.nix|Nix development environment")
             fi
         fi
-        files+=("$REPO_URL/templates/$template/devcontainer/Dockerfile|devcontainer/Dockerfile|Minimal Ubuntu + Nix")
-        files+=("$REPO_URL/templates/$template/devcontainer/devcontainer.json|devcontainer/devcontainer.json|DevPod config")
+        files+=("$REPO_URL/templates/$template/.devcontainer/Dockerfile|.devcontainer/Dockerfile|Minimal Ubuntu + Nix")
+        files+=("$REPO_URL/templates/$template/.devcontainer/devcontainer.json|.devcontainer/devcontainer.json|DevPod config")
     fi
 
     # Template-specific files (only during initial setup, not when adding workflows)
