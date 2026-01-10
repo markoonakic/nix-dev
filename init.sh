@@ -160,8 +160,8 @@ detect_existing() {
 
 # Interactive template selection
 select_template() {
-    echo ""
-    echo "Select template:"
+    echo "" >&2
+    echo "Select template:" >&2
     local i=1
     local template_keys=()
     for key in "${!TEMPLATES[@]}"; do
@@ -173,11 +173,11 @@ select_template() {
     unset IFS
 
     for key in "${sorted[@]}"; do
-        echo "  $i) $key - ${TEMPLATES[$key]}"
+        echo "  $i) $key - ${TEMPLATES[$key]}" >&2
         ((i++))
     done
 
-    read -p "Choice [1]: " choice
+    read -p "Choice [1]: " choice >&2
     choice=${choice:-1}
 
     # Convert number to template name
@@ -187,13 +187,13 @@ select_template() {
 
 # Interactive workflow selection
 select_workflow() {
-    echo ""
-    echo "Select workflow:"
-    echo "  1) Direnv only (fast, local development)"
-    echo "  2) Container only (portable, isolated)"
-    echo "  3) Both (direnv for local, container for remote)"
+    echo "" >&2
+    echo "Select workflow:" >&2
+    echo "  1) Direnv only (fast, local development)" >&2
+    echo "  2) Container only (portable, isolated)" >&2
+    echo "  3) Both (direnv for local, container for remote)" >&2
 
-    read -p "Choice [3]: " choice
+    read -p "Choice [3]: " choice >&2
     choice=${choice:-3}
 
     case "$choice" in
