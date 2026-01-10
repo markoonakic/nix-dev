@@ -1,0 +1,12 @@
+# Editor files
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Nix build artifacts (shouldn't be in templates, but just in case)
+result
+result-*
+
+# Direnv
+.direnv/

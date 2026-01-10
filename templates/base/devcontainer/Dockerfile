@@ -1,0 +1,42 @@
+FROM ubuntu:24.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Minimal essentials (~20MB increase from base 78MB)
+RUN apt-get update && apt-get install -y \
+    bash \
+    ca-certificates \
+    curl \
+    git \
+    sudo \
+    wget \
+    xz-utils \
+    zsh \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create user (NOT "vscode")
+ARG USERNAME=marko
+ARG USER_UID=1000
+ARG USER_GID=1000
+
+RUN groupadd --gid $USER_GID $USERNAME \
+    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME -s /bin/zsh \
+    && echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+USER $USERNAME
+WORKDIR /home/$USERNAME
+
+# Install Nix (~100MB)
+RUN curl -L https://nixos.org/nix/install | sh -s -- --no-daemon && \
+    echo '. ~/.nix-profile/etc/profile.d/nix.sh' >> ~/.zshrc && \
+    mkdir -p ~/.config/nix && \
+    echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
+
+# Clone and apply personal dotfiles via Home Manager (~50MB)
+# This gives you same shell config as your Mac inside the container
+RUN . ~/.nix-profile/etc/profile.d/nix.sh && \
+    nix run nixpkgs#git -- clone --depth 1 https://github.com/markoonakic/nix-dotfiles.git ~/.config/nix-dotfiles && \
+    nix run home-manager -- switch --flake ~/.config/nix-dotfiles#marko@devcontainer
+
+WORKDIR /workspace
+CMD ["zsh"]
