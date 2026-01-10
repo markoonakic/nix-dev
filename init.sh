@@ -93,7 +93,13 @@ handle_conflict() {
     echo "  4) Show diff"
     echo "  5) Abort"
     echo ""
-    read -p "Choice [1]: " choice
+    # Check if stdin is a terminal (not piped)
+    if [ -t 0 ]; then
+        read -p "Choice [1]: " choice
+    else
+        choice=""
+        info "(Running via pipe, defaulting to: Keep existing)"
+    fi
     choice=${choice:-1}
 
     case "$choice" in
@@ -177,7 +183,12 @@ select_template() {
         ((i++))
     done
 
-    read -p "Choice [1]: " choice >&2
+    # Check if stdin is a terminal (not piped)
+    if [ -t 0 ]; then
+        read -p "Choice [1]: " choice >&2
+    else
+        choice=""
+    fi
     choice=${choice:-1}
 
     # Convert number to template name
@@ -193,7 +204,12 @@ select_workflow() {
     echo "  2) Container only (portable, isolated)" >&2
     echo "  3) Both (direnv for local, container for remote)" >&2
 
-    read -p "Choice [3]: " choice >&2
+    # Check if stdin is a terminal (not piped)
+    if [ -t 0 ]; then
+        read -p "Choice [3]: " choice >&2
+    else
+        choice=""
+    fi
     choice=${choice:-3}
 
     case "$choice" in
@@ -261,12 +277,19 @@ preview_changes() {
     DRY_RUN=false
 
     echo ""
-    read -p "Proceed with these changes? [Y/n]: " proceed
-    proceed=${proceed:-Y}
 
-    if [[ ! "$proceed" =~ ^[Yy]$ ]]; then
-        info "Aborted by user"
-        exit 0
+    # Check if stdin is a terminal (not piped)
+    if [ -t 0 ]; then
+        read -p "Proceed with these changes? [Y/n]: " proceed
+        proceed=${proceed:-Y}
+
+        if [[ ! "$proceed" =~ ^[Yy]$ ]]; then
+            info "Aborted by user"
+            exit 0
+        fi
+    else
+        # Running via pipe (e.g., curl | bash), auto-proceed
+        info "Auto-proceeding (running via pipe)"
     fi
 }
 
@@ -326,9 +349,14 @@ main() {
         fi
         echo "  - Or continue to update/modify existing setup"
         echo ""
-        read -p "Continue? [y/N]: " continue
-        if [[ ! "$continue" =~ ^[Yy]$ ]]; then
-            exit 0
+        # Check if stdin is a terminal (not piped)
+        if [ -t 0 ]; then
+            read -p "Continue? [y/N]: " continue
+            if [[ ! "$continue" =~ ^[Yy]$ ]]; then
+                exit 0
+            fi
+        else
+            info "(Running via pipe, auto-continuing)"
         fi
     fi
 
