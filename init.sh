@@ -208,25 +208,32 @@ select_workflow() {
 download_template() {
     local template="$1"
     local workflow="$2"
+    local add_mode="$3"  # Optional: "add-container" or "add-direnv"
     local files=()
 
     # Common files (flake.nix)
     if [[ "$workflow" == "direnv" || "$workflow" == "both" ]]; then
-        files+=("$REPO_URL/templates/$template/flake.nix|flake.nix|Nix development environment")
+        # Only add flake.nix if not in add-direnv mode (flake.nix should already exist)
+        if [[ "$add_mode" != "direnv" ]]; then
+            files+=("$REPO_URL/templates/$template/flake.nix|flake.nix|Nix development environment")
+        fi
         files+=("$REPO_URL/templates/$template/.envrc|.envrc|direnv auto-activation")
     fi
 
     if [[ "$workflow" == "container" || "$workflow" == "both" ]]; then
         if [[ "$workflow" == "container" ]]; then
             # Container-only still needs flake.nix (used inside container)
-            files+=("$REPO_URL/templates/$template/flake.nix|flake.nix|Nix development environment")
+            # But not if we're adding to existing direnv setup
+            if [[ "$add_mode" != "container" ]]; then
+                files+=("$REPO_URL/templates/$template/flake.nix|flake.nix|Nix development environment")
+            fi
         fi
         files+=("$REPO_URL/templates/$template/devcontainer/Dockerfile|devcontainer/Dockerfile|Minimal Ubuntu + Nix")
         files+=("$REPO_URL/templates/$template/devcontainer/devcontainer.json|devcontainer/devcontainer.json|DevPod config")
     fi
 
-    # Template-specific files
-    if [[ "$template" == "python-uv" ]]; then
+    # Template-specific files (only during initial setup, not when adding workflows)
+    if [[ -z "$add_mode" && "$template" == "python-uv" ]]; then
         files+=("$REPO_URL/templates/$template/pyproject.toml|pyproject.toml|Python project config")
     fi
 
@@ -243,13 +250,14 @@ download_template() {
 preview_changes() {
     local template="$1"
     local workflow="$2"
+    local add_mode="$3"
 
     echo ""
     echo -e "${BLUE}📋 Preview of changes:${NC}"
     echo ""
 
     DRY_RUN=true
-    download_template "$template" "$workflow"
+    download_template "$template" "$workflow" "$add_mode"
     DRY_RUN=false
 
     echo ""
@@ -364,11 +372,11 @@ main() {
     info "Workflow: $workflow"
 
     # Preview changes
-    preview_changes "$template" "$workflow"
+    preview_changes "$template" "$workflow" "$add_mode"
 
     # Download files
     echo ""
-    if download_template "$template" "$workflow"; then
+    if download_template "$template" "$workflow" "$add_mode"; then
         echo ""
         success "✅ Initialization complete!"
         echo ""
