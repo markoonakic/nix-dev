@@ -93,13 +93,8 @@ handle_conflict() {
     echo "  4) Show diff"
     echo "  5) Abort"
     echo ""
-    # Check if stdin is a terminal (not piped)
-    if [ -t 0 ]; then
-        read -p "Choice [1]: " choice
-    else
-        choice=""
-        info "(Running via pipe, defaulting to: Keep existing)"
-    fi
+    # Read from /dev/tty to work even when script is piped
+    read -p "Choice [1]: " choice </dev/tty 2>/dev/null || choice=""
     choice=${choice:-1}
 
     case "$choice" in
@@ -183,12 +178,8 @@ select_template() {
         ((i++))
     done
 
-    # Check if stdin is a terminal (not piped)
-    if [ -t 0 ]; then
-        read -p "Choice [1]: " choice >&2
-    else
-        choice=""
-    fi
+    # Read from /dev/tty to work even when script is piped
+    read -p "Choice [1]: " choice </dev/tty >&2 2>/dev/null || choice=""
     choice=${choice:-1}
 
     # Convert number to template name
@@ -204,12 +195,8 @@ select_workflow() {
     echo "  2) Container only (portable, isolated)" >&2
     echo "  3) Both (direnv for local, container for remote)" >&2
 
-    # Check if stdin is a terminal (not piped)
-    if [ -t 0 ]; then
-        read -p "Choice [3]: " choice >&2
-    else
-        choice=""
-    fi
+    # Read from /dev/tty to work even when script is piped
+    read -p "Choice [3]: " choice </dev/tty >&2 2>/dev/null || choice=""
     choice=${choice:-3}
 
     case "$choice" in
@@ -278,18 +265,13 @@ preview_changes() {
 
     echo ""
 
-    # Check if stdin is a terminal (not piped)
-    if [ -t 0 ]; then
-        read -p "Proceed with these changes? [Y/n]: " proceed
-        proceed=${proceed:-Y}
+    # Read from /dev/tty to work even when script is piped
+    read -p "Proceed with these changes? [Y/n]: " proceed </dev/tty 2>/dev/null || proceed=""
+    proceed=${proceed:-Y}
 
-        if [[ ! "$proceed" =~ ^[Yy]$ ]]; then
-            info "Aborted by user"
-            exit 0
-        fi
-    else
-        # Running via pipe (e.g., curl | bash), auto-proceed
-        info "Auto-proceeding (running via pipe)"
+    if [[ ! "$proceed" =~ ^[Yy]$ ]]; then
+        info "Aborted by user"
+        exit 0
     fi
 }
 
@@ -349,14 +331,10 @@ main() {
         fi
         echo "  - Or continue to update/modify existing setup"
         echo ""
-        # Check if stdin is a terminal (not piped)
-        if [ -t 0 ]; then
-            read -p "Continue? [y/N]: " continue
-            if [[ ! "$continue" =~ ^[Yy]$ ]]; then
-                exit 0
-            fi
-        else
-            info "(Running via pipe, auto-continuing)"
+        # Read from /dev/tty to work even when script is piped
+        read -p "Continue? [y/N]: " continue </dev/tty 2>/dev/null || continue=""
+        if [[ ! "$continue" =~ ^[Yy]$ ]]; then
+            exit 0
         fi
     fi
 
