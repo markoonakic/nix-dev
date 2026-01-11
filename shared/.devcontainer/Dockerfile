@@ -39,7 +39,8 @@ ENV PATH="/home/marko/.nix-profile/bin:${PATH}"
 
 RUN \
     nix run nixpkgs#git -- clone --depth 1 https://github.com/markoonakic/nix-dotfiles.git ~/.config/nix-dotfiles && \
-    nix run home-manager -- switch --flake ~/.config/nix-dotfiles#marko@devcontainer
+    ARCH=$(uname -m) && \
+    nix run home-manager -- switch --flake ~/.config/nix-dotfiles#marko@devcontainer-${ARCH}
 
 WORKDIR /workspace
 CMD ["zsh"]
