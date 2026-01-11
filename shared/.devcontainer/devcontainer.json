@@ -3,9 +3,6 @@
   "build": {
     "dockerfile": "Dockerfile"
   },
-  "mounts": [
-    "source=${localWorkspaceFolder},target=/workspace/${localWorkspaceFolderBasename},type=bind"
-  ],
-  "workspaceFolder": "/workspace/${localWorkspaceFolderBasename}",
+  "workspaceFolder": "/workspace",
   "remoteUser": "marko"
 }
