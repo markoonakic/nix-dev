@@ -2,12 +2,13 @@ FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Minimal essentials (~20MB increase from base 78MB)
+# Minimal essentials (~25MB increase from base 78MB)
 RUN apt-get update && apt-get install -y \
     bash \
     ca-certificates \
     curl \
     git \
+    openssh-client \
     sudo \
     wget \
     xz-utils \
