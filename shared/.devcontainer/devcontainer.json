@@ -7,6 +7,5 @@
     "source=${localWorkspaceFolder},target=/workspace/${localWorkspaceFolderBasename},type=bind"
   ],
   "workspaceFolder": "/workspace/${localWorkspaceFolderBasename}",
-  "remoteUser": "marko",
-  "postCreateCommand": "nix develop --command echo 'Development environment ready'"
+  "remoteUser": "marko"
 }
