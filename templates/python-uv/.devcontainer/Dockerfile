@@ -32,11 +32,12 @@ RUN curl -L https://nixos.org/nix/install | sh -s -- --no-daemon && \
     mkdir -p ~/.config/nix && \
     echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
 
+# Set PATH for Nix
+ENV PATH="/home/marko/.nix-profile/bin:${PATH}"
+
 # Clone and apply personal dotfiles via Home Manager (~50MB)
 # This gives you same shell config as your Mac inside the container
-SHELL ["/bin/bash", "-c"]
-RUN source ~/.nix-profile/etc/profile.d/nix.sh && \
-    nix run nixpkgs#git -- clone --depth 1 https://github.com/markoonakic/nix-dotfiles.git ~/.config/nix-dotfiles && \
+RUN nix run nixpkgs#git -- clone --depth 1 https://github.com/markoonakic/nix-dotfiles.git ~/.config/nix-dotfiles && \
     nix run home-manager -- switch --flake ~/.config/nix-dotfiles#marko@devcontainer
 
 WORKDIR /workspace
