@@ -94,7 +94,8 @@ handle_conflict() {
     echo "  5) Abort"
     echo ""
     # Read from /dev/tty to work even when script is piped
-    read -p "Choice [1]: " choice </dev/tty 2>/dev/null || choice=""
+    echo -n "Choice [1]: "
+    read choice </dev/tty 2>/dev/null || choice=""
     choice=${choice:-1}
 
     case "$choice" in
@@ -179,7 +180,8 @@ select_template() {
     done
 
     # Read from /dev/tty to work even when script is piped
-    read -p "Choice [1]: " choice </dev/tty >&2 2>/dev/null || choice=""
+    echo -n "Choice [1]: " >&2
+    read choice </dev/tty 2>/dev/null || choice=""
     choice=${choice:-1}
 
     # Convert number to template name
@@ -196,7 +198,8 @@ select_workflow() {
     echo "  3) Both (direnv for local, container for remote)" >&2
 
     # Read from /dev/tty to work even when script is piped
-    read -p "Choice [3]: " choice </dev/tty >&2 2>/dev/null || choice=""
+    echo -n "Choice [3]: " >&2
+    read choice </dev/tty 2>/dev/null || choice=""
     choice=${choice:-3}
 
     case "$choice" in
@@ -266,7 +269,8 @@ preview_changes() {
     echo ""
 
     # Read from /dev/tty to work even when script is piped
-    read -p "Proceed with these changes? [Y/n]: " proceed </dev/tty 2>/dev/null || proceed=""
+    echo -n "Proceed with these changes? [Y/n]: "
+    read proceed </dev/tty 2>/dev/null || proceed=""
     proceed=${proceed:-Y}
 
     if [[ ! "$proceed" =~ ^[Yy]$ ]]; then
@@ -332,7 +336,8 @@ main() {
         echo "  - Or continue to update/modify existing setup"
         echo ""
         # Read from /dev/tty to work even when script is piped
-        read -p "Continue? [y/N]: " continue </dev/tty 2>/dev/null || continue=""
+        echo -n "Continue? [y/N]: "
+        read continue </dev/tty 2>/dev/null || continue=""
         if [[ ! "$continue" =~ ^[Yy]$ ]]; then
             exit 0
         fi
