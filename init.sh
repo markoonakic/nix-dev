@@ -234,8 +234,9 @@ download_template() {
                 files+=("$REPO_URL/templates/$template/flake.nix|flake.nix|Nix development environment")
             fi
         fi
-        files+=("$REPO_URL/templates/$template/.devcontainer/Dockerfile|.devcontainer/Dockerfile|Minimal Ubuntu + Nix")
-        files+=("$REPO_URL/templates/$template/.devcontainer/devcontainer.json|.devcontainer/devcontainer.json|DevPod config")
+        # Use shared devcontainer files (same for all templates)
+        files+=("$REPO_URL/shared/.devcontainer/Dockerfile|.devcontainer/Dockerfile|Minimal Ubuntu + Nix")
+        files+=("$REPO_URL/shared/.devcontainer/devcontainer.json|.devcontainer/devcontainer.json|DevPod config")
     fi
 
     # Template-specific files (only during initial setup, not when adding workflows)
