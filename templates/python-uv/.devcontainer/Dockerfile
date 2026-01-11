@@ -34,7 +34,8 @@ RUN curl -L https://nixos.org/nix/install | sh -s -- --no-daemon && \
 
 # Clone and apply personal dotfiles via Home Manager (~50MB)
 # This gives you same shell config as your Mac inside the container
-RUN . ~/.nix-profile/etc/profile.d/nix.sh && \
+SHELL ["/bin/bash", "-c"]
+RUN source ~/.nix-profile/etc/profile.d/nix.sh && \
     nix run nixpkgs#git -- clone --depth 1 https://github.com/markoonakic/nix-dotfiles.git ~/.config/nix-dotfiles && \
     nix run home-manager -- switch --flake ~/.config/nix-dotfiles#marko@devcontainer
 
