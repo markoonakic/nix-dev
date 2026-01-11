@@ -24,6 +24,7 @@ RUN groupadd --gid $USER_GID $USERNAME 2>/dev/null || groupmod -n $USERNAME $(ge
     && echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 USER $USERNAME
+ENV USER=$USERNAME
 WORKDIR /home/$USERNAME
 
 # Install Nix (~100MB)
