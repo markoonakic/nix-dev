@@ -5,7 +5,7 @@ One-command project initialization with **direnv** (local, fast) and/or **contai
 ## Features
 
 - ✅ **Two workflows in one** - Direnv for local Mac, containers for remote servers
-- ✅ **Minimal containers** - 311MB (vs Microsoft devcontainer 1.05GB)
+- ✅ **Minimal containers** - ~300MB (vs Microsoft devcontainer 1.05GB)
 - ✅ **No bloat** - Only downloads files you actually need
 - ✅ **Interactive & safe** - Preview changes, conflict resolution
 - ✅ **Idempotent** - Safe to run multiple times
@@ -78,14 +78,14 @@ devpod ssh .
 
 **Files created:**
 - `flake.nix` - Nix development environment (used inside container)
-- `devcontainer/Dockerfile` - Minimal Ubuntu + Nix + your dotfiles
+- `devcontainer/Dockerfile` - Minimal Debian + Nix + your dotfiles
 - `devcontainer/devcontainer.json` - DevPod configuration
 
 **Container includes:**
-- Ubuntu 24.04 base (78MB)
+- Debian stable-slim base (27MB)
 - Nix package manager (~100MB)
 - Your nix-dotfiles (same shell, aliases, tools as your Mac)
-- Total: ~311MB (vs Microsoft devcontainer 1.05GB)
+- Total: ~300MB (vs Microsoft devcontainer 1.05GB)
 
 ### Both Workflows (Recommended)
 
@@ -148,7 +148,7 @@ curl -fsSL ... | bash -s -- --template shell --workflow direnv --force
 
 ### Container Workflow
 
-1. `Dockerfile` builds from Ubuntu 24.04 + Nix
+1. `Dockerfile` builds from Debian stable-slim + Nix
 2. Installs Nix inside the container
 3. Clones your [nix-dotfiles](https://github.com/markoonakic/nix-dotfiles) and applies Home Manager
 4. Now you have the same shell, aliases, and tools as your Mac inside the container
@@ -160,8 +160,8 @@ curl -fsSL ... | bash -s -- --template shell --workflow direnv --force
 | Image | Size | Contents |
 |-------|------|----------|
 | **Microsoft devcontainer** | 1.05GB | 253 packages, user "vscode" |
-| **nix-dev** | 311MB | Ubuntu 24.04 + Nix + your dotfiles, user "marko" |
-| **Savings** | **70%** | 734MB less |
+| **nix-dev** | ~300MB | Debian stable-slim + Nix + your dotfiles, user "marko" |
+| **Savings** | **71%** | 750MB less |
 
 ## Conflict Resolution
 

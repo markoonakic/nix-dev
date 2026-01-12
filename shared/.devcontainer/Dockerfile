@@ -1,8 +1,8 @@
-FROM ubuntu:24.04
+FROM debian:stable-slim
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Minimal essentials (~25MB increase from base 78MB)
+# Minimal essentials (~25MB increase from base 27MB)
 RUN apt-get update && apt-get install -y \
     bash \
     ca-certificates \
