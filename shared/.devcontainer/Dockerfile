@@ -2,7 +2,7 @@ FROM debian:stable-slim
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Minimal essentials (~25MB increase from base 27MB)
+# Minimal essentials + build tools (~40MB increase from base 27MB)
 RUN apt-get update && apt-get install -y \
     bash \
     ca-certificates \
@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y \
     wget \
     xz-utils \
     zsh \
+    build-essential \
     && rm -rf /var/lib/apt/lists/*
 
 # Create user (NOT "vscode")
@@ -44,5 +45,6 @@ RUN \
     ARCH=$(uname -m) && \
     nix run home-manager -- switch --flake ~/.config/nix-dotfiles#marko@devcontainer-${ARCH}
 
-WORKDIR /workspace
+# Default to home directory, devcontainer.json will override to /workspaces/<project>
+WORKDIR /home/$USERNAME
 CMD ["zsh"]

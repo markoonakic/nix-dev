@@ -227,15 +227,12 @@ download_template() {
     fi
 
     if [[ "$workflow" == "container" || "$workflow" == "both" ]]; then
-        if [[ "$workflow" == "container" ]]; then
-            # Container-only still needs flake.nix (used inside container)
-            # But not if we're adding to existing direnv setup
-            if [[ "$add_mode" != "container" ]]; then
-                files+=("$REPO_URL/templates/$template/flake.nix|flake.nix|Nix development environment")
-            fi
-        fi
+        # Note: Container workflow does NOT need flake.nix
+        # The container uses your nix-dotfiles via Home Manager, not project-level flake.nix
+        # flake.nix is only needed for direnv workflow (local `nix develop`)
+
         # Use shared devcontainer files (same for all templates)
-        files+=("$REPO_URL/shared/.devcontainer/Dockerfile|.devcontainer/Dockerfile|Minimal Ubuntu + Nix")
+        files+=("$REPO_URL/shared/.devcontainer/Dockerfile|.devcontainer/Dockerfile|Minimal Debian + Nix")
         files+=("$REPO_URL/shared/.devcontainer/devcontainer.json|.devcontainer/devcontainer.json|DevPod config")
     fi
 
